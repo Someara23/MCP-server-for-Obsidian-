@@ -1,0 +1,26 @@
+# Cloudflare Named Tunnel — config template
+# Copy to ~/.cloudflared/config.yml and fill in your values.
+#
+# Replace:
+#   <TUNNEL_UUID>   — from `cloudflared tunnel create vault`
+#   <YOUR_DOMAIN>   — the domain you added to Cloudflare (e.g. seansvault.com)
+#   <MCP_PORT>      — port your Obsidian MCP server runs on
+
+tunnel: <TUNNEL_UUID>
+credentials-file: /Users/sean/.cloudflared/<TUNNEL_UUID>.json
+
+ingress:
+  # Vault API Server (this project)
+  - hostname: api.<YOUR_DOMAIN>
+    service: http://localhost:3002
+    originRequest:
+      noTLSVerify: true
+
+  # Obsidian MCP Server (existing)
+  - hostname: mcp.<YOUR_DOMAIN>
+    service: http://localhost:<MCP_PORT>
+    originRequest:
+      noTLSVerify: true
+
+  # Catch-all (required by cloudflared)
+  - service: http_status:404
